@@ -9,7 +9,6 @@ void printWordOccur(char* word, unsigned int occurence)
 {
     //max len = 16 caractères
     int word_len = strlen(word);
-    //printf("===== Word ===== | ===== Occurence =====\n");
     printf("%s", word);
     if(word_len < 8) printf("\t");
     if(word_len < 16) printf("\t");
@@ -50,7 +49,7 @@ int main(int argc, const char* argv[])
     char *word;
     //unsigned int max = 0;
 
-    // LOOP
+    // DATA GATHERING -> HASHTABLE
     while (fgets(str, MAXCHAR, fp) != NULL)
     {
         //printf("%s", str);
@@ -70,10 +69,15 @@ int main(int argc, const char* argv[])
             word = strtok(NULL, delimiters);
         }    
     }
-
     //printf("%i", max);
-
     fclose(fp);
+
+    // HEAP-MAX
+    //...
+    
+    // DISPLAY WORD-OCCURENCE (most used first)
+    //printf("===== Word ===== | ===== Occurence =====\n");
+    //printWordOccur(word, occur);
     
     printInfo(
         42, //Taille
