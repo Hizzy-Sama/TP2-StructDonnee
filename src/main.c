@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #define MAXCHAR 1024
 
@@ -15,13 +16,26 @@ void printWordOccur(char* word, unsigned int occurence)
     printf(": %i\n", occurence);
 }
 
-int main(int argc, const char* argv[]) {
+void printInfo(unsigned int taille, float remplissage, unsigned int longueurMax, double execTime)
+{
+    printf("\n");
+    printf("============== Infos ==============\n");
+    printf("Taille de la table de hachage : %i\n", taille);
+    printf("Facteur de remplissage : %f\n", remplissage);
+    printf("Plus longue liste : %i\n", longueurMax);
+    printf("Temps d'exécution : %f\n", execTime);
+    printf("===================================\n");
+    printf("\n");
+}
+
+int main(int argc, const char* argv[])
+{
+    // INPUT CHECK
     if(argc < 2)
     {
         printf("wrong usage,\n use : %s <input file>\n", argv[0]);
     }
     const char* filename = argv[1];
-	
  
     FILE *fp = fopen(filename, "r");
     if (fp == NULL){
@@ -29,11 +43,14 @@ int main(int argc, const char* argv[]) {
         return 1;
     }
 
+    // INIT
+    time_t start = clock();
+
     char str[MAXCHAR];
     char *word;
+    //unsigned int max = 0;
 
-    unsigned int max = 0;
-
+    // LOOP
     while (fgets(str, MAXCHAR, fp) != NULL)
     {
         //printf("%s", str);
@@ -43,7 +60,8 @@ int main(int argc, const char* argv[]) {
         word = strtok(str, delimiters);
         while (word != NULL)
         {
-            if(strlen(word) > max) { max = strlen(word); }
+            //if(strlen(word) > max) { max = strlen(word); }
+            
             //=========================================================/
             //insérer dans la table de hashage, clé = word, valeur += 1
             //=========================================================/
@@ -53,9 +71,16 @@ int main(int argc, const char* argv[]) {
         }    
     }
 
-    printf("%i", max);
+    //printf("%i", max);
 
     fclose(fp);
+    
+    printInfo(
+        42, //Taille
+        1.0, //remplissage
+        42, // longueur max
+        clock() - start // Temps d'éxec
+    );
 
     return 0;
 }
