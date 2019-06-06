@@ -15,7 +15,7 @@ void printWordOccur(char* word, unsigned int occurence)
     printf(": %i\n", occurence);
 }
 
-void printInfo(unsigned int taille, float remplissage, unsigned int longueurMax, double execTime)
+void printInfo(unsigned int taille, double remplissage, unsigned int longueurMax, double execTime)
 {
     printf("\n");
     printf("============== Infos ==============\n");
@@ -80,11 +80,12 @@ int main(int argc, const char* argv[])
     //printf("===== Word ===== | ===== Occurence =====\n");
     //printWordOccur(word, occur);
     
+    time_t end = clock();
     printInfo(
         42, //Taille
         1.0, //remplissage
         42, // longueur max
-        clock() - start // Temps d'éxec
+        (end - start) / CLOCKS_PER_SEC // Temps d'éxec
     );
 
     return 0;
