@@ -24,6 +24,7 @@ void printInfo(unsigned int taille, float remplissage, unsigned int longueurMax,
     printf("Plus longue liste : %i\n", longueurMax);
     printf("Temps d'exécution : %f\n", execTime);
     printf("===================================\n");
+    printf("| %i | %f | %i | %f |\n", taille, remplissage ,longueurMax, execTime);
     printf("\n");
 }
 
