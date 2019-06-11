@@ -33,25 +33,41 @@ struct MaxHeap {
 
 typedef struct MaxHeap MaxHeap;
 
+// test-only
 void initialiser(MaxHeap *h, int s) {
 	h->count = 0;
 	h->size = s;
-	h->heap = (donnee *)malloc(sizeof(donnee) *  s);
+	h->heap = (donnee *)malloc(sizeof(donnee) * s);
+}
+
+MaxHeap * construire(donnee * data, int data_length){
+    MaxHeap * h;
+	h->count = 0;
+	h->size = data_length;
+	h->heap = (donnee *)malloc(sizeof(donnee) * data_length);
+    for (int i = 0; i < data_length; i++)
+    {
+        inserer(h, data[i]);
+    }
+    return h;
 }
 
 void inserer(MaxHeap *h, donnee v) {
-	int index;
 	if (h->count == h->size) {
 		h->size += 1;
 		h->heap = realloc(h->heap, sizeof(donnee) * h->size);
 	}
-	index = h->count;
 
+    // une seule position possible : à la fin
+	int index = h->count;
 	h->heap[index] = v;
 
+    // percolage
 	while (index != 0) {
 		if (h->heap[index].compte > h->heap[parent(index)].compte) {
 
+            // si le parent a un nombre d'occurence plus faible
+            // que la nouvelle donnée, on les échange
 			donnee tmp = h->heap[index];
 			h->heap[index] = h->heap[parent(index)];
 			h->heap[parent(index)] = tmp;
@@ -63,18 +79,17 @@ void inserer(MaxHeap *h, donnee v) {
 	h->count++;
 }
 
-donnee top(MaxHeap *h) {
-	return h->heap[0];
-}
-
 void pop(MaxHeap *h) {
 	if (h->count == 0)
 		return;
 
+    // on inverse la racine
+    // et la plus éloignée des feuilles
 	h->heap[0] = h->heap[--(h->count)];
 
 	int index = 0;
 
+    // tamisage
 	while (index < h->count) {
 		int max = index;
 
@@ -98,28 +113,19 @@ void pop(MaxHeap *h) {
 	}
 }
 
+donnee top(MaxHeap *h) {
+	return h->heap[0];
+}
+
 void afficherDonnees(MaxHeap *h) {
+    int previous_count = h->count;
 	while (h->count != 1)
 	{
 		donnee d = top(h); pop(h);
 		printWordOccur(d.mot, d.compte);
 	}
+    h->count = previous_count;
 }
-
-/*int main() {
-	const int heap_size = 100;
-	MaxHeap h;
-	initialiser(&h, heap_size);
-	for (int i = 0; i <= 100; ++i)
-	{
-		donnee d;
-		d.compte = rand() % 10000;
-		d.mot = "a";
-		inserer(&h, d);
-	}
-	afficherDonnees(&h);
-	return 0;
-}*/
 
 void printWordOccur(char* word, unsigned int occurence)
 {
@@ -143,6 +149,22 @@ void printInfo(unsigned int taille, double remplissage, unsigned int longueurMax
 	printf("| %i | %f | %i | %f |\n", taille, remplissage, longueurMax, execTime);
 	printf("\n");
 }
+
+/* test du monceau
+int main() {
+	const int heap_size = 100;
+	MaxHeap h;
+	initialiser(&h, heap_size);
+	for (int i = 0; i <= 100; ++i)
+	{
+		donnee d;
+		d.compte = rand() % 10000;
+		d.mot = "a";
+		inserer(&h, d);
+	}
+	afficherDonnees(&h);
+	return 0;
+}*/
 
 int main(int argc, const char* argv[])
 {
