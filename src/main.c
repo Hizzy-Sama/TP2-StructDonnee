@@ -3,6 +3,8 @@
 #include <string.h>
 #include <time.h>
 
+#include <HashMap.h>
+
 #define MAXCHAR 1024
 
 struct donnee {
@@ -33,23 +35,10 @@ struct MaxHeap {
 
 typedef struct MaxHeap MaxHeap;
 
-// test-only
 void initialiser(MaxHeap *h, int s) {
 	h->count = 0;
 	h->size = s;
 	h->heap = (donnee *)malloc(sizeof(donnee) * s);
-}
-
-MaxHeap * construire(donnee * data, int data_length){
-    MaxHeap * h;
-	h->count = 0;
-	h->size = data_length;
-	h->heap = (donnee *)malloc(sizeof(donnee) * data_length);
-    for (int i = 0; i < data_length; i++)
-    {
-        inserer(h, data[i]);
-    }
-    return h;
 }
 
 void inserer(MaxHeap *h, donnee v) {
@@ -77,6 +66,16 @@ void inserer(MaxHeap *h, donnee v) {
 		else break;
 	}
 	h->count++;
+}
+
+void construire(MaxHeap *h, donnee * data, int data_length){
+	h->count = 0;
+	h->size = data_length;
+	h->heap = (donnee *)malloc(sizeof(donnee) * data_length);
+    for (int i = 0; i < data_length; i++)
+    {
+        inserer(h, data[i]);
+    }
 }
 
 void pop(MaxHeap *h) {
@@ -117,16 +116,6 @@ donnee top(MaxHeap *h) {
 	return h->heap[0];
 }
 
-void afficherDonnees(MaxHeap *h) {
-    int previous_count = h->count;
-	while (h->count != 1)
-	{
-		donnee d = top(h); pop(h);
-		printWordOccur(d.mot, d.compte);
-	}
-    h->count = previous_count;
-}
-
 void printWordOccur(char* word, unsigned int occurence)
 {
 	//max len = 16 caractères
@@ -135,6 +124,16 @@ void printWordOccur(char* word, unsigned int occurence)
 	if (word_len < 8) printf("\t");
 	if (word_len < 16) printf("\t");
 	printf(": %i\n", occurence);
+}
+
+void afficherDonnees(MaxHeap *h) {
+    int previous_count = h->count;
+	while (h->count != 1)
+	{
+		donnee d = top(h); pop(h);
+		printWordOccur(d.mot, d.compte);
+	}
+    h->count = previous_count;
 }
 
 void printInfo(unsigned int taille, double remplissage, unsigned int longueurMax, double execTime)
@@ -150,21 +149,24 @@ void printInfo(unsigned int taille, double remplissage, unsigned int longueurMax
 	printf("\n");
 }
 
-/* test du monceau
+// test du monceau
+/*
 int main() {
 	const int heap_size = 100;
 	MaxHeap h;
-	initialiser(&h, heap_size);
+    donnee data[100];
 	for (int i = 0; i <= 100; ++i)
 	{
 		donnee d;
 		d.compte = rand() % 10000;
 		d.mot = "a";
-		inserer(&h, d);
+		data[i] = d;
 	}
+	construire(&h, data, heap_size);
 	afficherDonnees(&h);
 	return 0;
-}*/
+}
+*/
 
 int main(int argc, const char* argv[])
 {
@@ -212,7 +214,7 @@ int main(int argc, const char* argv[])
 	fclose(fp);
 
 	// HEAP-MAX
-	MaxHeap h;
+	//MaxHeap h;
 	//initialiser(&h, 100);
 
 	// DISPLAY WORD-OCCURENCE (most used first)
