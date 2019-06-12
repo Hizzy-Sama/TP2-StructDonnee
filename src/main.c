@@ -181,11 +181,13 @@ int main(int argc, const char* argv[])
 	}
 
 	// INIT
-	time_t start = clock();
-
+    int max_length = 0; // longueur maximale d'une liste chainée
+    float remplissage = .0f;
 	char str[MAXCHAR];
 	char *word;
 	//unsigned int max = 0;
+	time_t start, end;
+    start = clock();
 
     HashMap* Hmap = newHashMap(TABLE_SIZE);
 
@@ -214,7 +216,7 @@ int main(int argc, const char* argv[])
 		}
 	}
 	//printf("%i", max);
-    analyseHashMap(Hmap);
+    analyseHashMap(Hmap, &max_length, &remplissage);
 	fclose(fp);
 
 	// HEAP-MAX
@@ -224,12 +226,12 @@ int main(int argc, const char* argv[])
 	// DISPLAY WORD-OCCURENCE (most used first)
 	//afficherDonnees(&h);
 
-	time_t end = clock();
+	end = clock();
 	printInfo(
 		Hmap->size, //Taille
-		1.0, //remplissage
-		42, // longueur max
-		(end - start) / CLOCKS_PER_SEC // Temps d'éxec
+		remplissage, //remplissage
+		max_length, // longueur max
+		(double)(end - start) / CLOCKS_PER_SEC // Temps d'éxec
 	);
 
 	return 0;

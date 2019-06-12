@@ -19,4 +19,4 @@ HashMap* newHashMap(unsigned size);
 unsigned int fonctionDeHashage(HashMap* hashMap, char* cle);
 void HASHMAP_inserer(HashMap *map, char* cle, int valeur);
 HASHMAP_DATA* HASHMAP_rechercher(HashMap* map, char* cle);
-void analyseHashMap(HashMap* map);
+void analyseHashMap(HashMap* map, int* length, float* remplissage);
