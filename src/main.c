@@ -200,7 +200,6 @@ int main(int argc, const char* argv[])
 		while (word != NULL)
 		{
 			//if(strlen(word) > max) { max = strlen(word); }
-	        //printHashMap(Hmap);
 
 			//=========================================================/
 			//insérer dans la table de hashage, clé = word, valeur += 1
@@ -210,14 +209,12 @@ int main(int argc, const char* argv[])
 			//=========================================================/
 
 			//printf("'%s'\n", word);
-	        //printHashMap(Hmap);
-			//printf("\n\n");
 			word = strtok(NULL, delimiters);
 
 		}
 	}
 	//printf("%i", max);
-    printHashMap(Hmap);
+    analyseHashMap(Hmap);
 	fclose(fp);
 
 	// HEAP-MAX

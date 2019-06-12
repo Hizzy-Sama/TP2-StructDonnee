@@ -76,7 +76,6 @@ void HASHMAP_inserer(HashMap *map, char* cle, int valeur)
 
 HASHMAP_DATA* HASHMAP_rechercher(HashMap* map, char* cle)
 {
-	printHashMap(map);
 	printf("scan %s\n", cle);
 
 	int hash = fonctionDeHashage(map, cle);
@@ -96,7 +95,8 @@ HASHMAP_DATA* HASHMAP_rechercher(HashMap* map, char* cle)
 	return NULL;
 }
 
-void printHashMap(HashMap* map)
+#define DEBUG_HMAP 1
+void analyseHashMap(HashMap* map)
 {
 	for(unsigned int i = 0; i < map->size; i++)
 	{
@@ -104,12 +104,12 @@ void printHashMap(HashMap* map)
 		{
 			// On parcourt la liste chainée
 			HASHMAP_DATA* list_ptr = map->table[i];
-			do
+			while(list_ptr != NULL)
 			{
-				printf("[%d]%s:%d ", i, list_ptr->cle, list_ptr->valeur);
-				list_ptr = list_ptr->suivant;
+				if (DEBUG_HMAP) printf("[%d]%s:%d ", i, list_ptr->cle, list_ptr->valeur);
+				if(list_ptr->suivant != NULL) list_ptr = list_ptr->suivant;
+				else break;
 			}
-			while(list_ptr != NULL);
 		}
 	}
 	printf("\n");
