@@ -52,7 +52,7 @@ void HASHMAP_inserer(HashMap *map, char* cle, int valeur)
 
 	// On parcourt la liste chainée
 	HASHMAP_DATA* list_ptr = map->table[hash];
-	do
+	while(list_ptr != NULL)
 	{
 		// On vérifie si l'entrée existe déjà
 		if(strcmp(list_ptr->cle, cle) == 0)
@@ -61,9 +61,12 @@ void HASHMAP_inserer(HashMap *map, char* cle, int valeur)
 			//printf("entry++\n");
 			return;
 		}
-		list_ptr = list_ptr->suivant;
+		if(list_ptr->suivant != NULL)
+		{
+			list_ptr = list_ptr->suivant;
+		}
+		else break;
 	}
-	while(list_ptr != NULL);
 
 	// On a pas trouvé d'entrée attachée à la clé
 	// On en crée une à la fin de la liste chainée

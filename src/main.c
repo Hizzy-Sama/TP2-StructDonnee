@@ -139,7 +139,7 @@ void printInfo(unsigned int taille, double remplissage, unsigned int longueurMax
 	printf("Taille de la table de hachage : %i\n", taille);
 	printf("Facteur de remplissage : %f\n", remplissage);
 	printf("Plus longue liste : %i\n", longueurMax);
-	printf("Temps d'exécution : %f\n", execTime);
+	printf("Temps d'execution : %f\n", execTime);
 	printf("===================================\n");
 	printf("| %i | %f | %i | %f |\n", taille, remplissage, longueurMax, execTime);
 	printf("\n");
@@ -209,14 +209,15 @@ int main(int argc, const char* argv[])
             HASHMAP_inserer(Hmap, key, 1);
 			//=========================================================/
 
-			printf("'%s'\n", word);
-	        printHashMap(Hmap);
-			printf("\n\n");
+			//printf("'%s'\n", word);
+	        //printHashMap(Hmap);
+			//printf("\n\n");
 			word = strtok(NULL, delimiters);
 
 		}
 	}
 	//printf("%i", max);
+    printHashMap(Hmap);
 	fclose(fp);
 
 	// HEAP-MAX
@@ -228,7 +229,7 @@ int main(int argc, const char* argv[])
 
 	time_t end = clock();
 	printInfo(
-		42, //Taille
+		Hmap->size, //Taille
 		1.0, //remplissage
 		42, // longueur max
 		(end - start) / CLOCKS_PER_SEC // Temps d'éxec
