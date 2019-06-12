@@ -11,7 +11,10 @@ typedef struct donnee
 
 typedef struct hashMap
 {
-	unsigned size;
+	unsigned size; // taille de la table de hachage
+	unsigned n; // nombre d'élément
+	unsigned max_length; // longueur maximale d'une liste chainée
+	float remplissage; // n / size
 	HASHMAP_DATA** table;
 } HashMap;
 
@@ -19,4 +22,4 @@ HashMap* newHashMap(unsigned size);
 unsigned int fonctionDeHashage(HashMap* hashMap, char* cle);
 void HASHMAP_inserer(HashMap *map, char* cle, int valeur);
 HASHMAP_DATA* HASHMAP_rechercher(HashMap* map, char* cle);
-void analyseHashMap(HashMap* map, int* length, float* remplissage);
+void analyseHashMap(HashMap* map);

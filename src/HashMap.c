@@ -95,22 +95,23 @@ HASHMAP_DATA* HASHMAP_rechercher(HashMap* map, char* cle)
 	return NULL;
 }
 
-#define DEBUG_HMAP 1
-void analyseHashMap(HashMap* map, int* max_length, float* remplissage)
+#define DEBUG_HMAP 0
+void analyseHashMap(HashMap* map)
 {
-	int n = 0; // nombre d'élément
+	map->n = 0;
+	map->max_length = 0;
 	for(unsigned int i = 0; i < map->size; i++)
 	{
 		if(map->table[i] != NULL)
 		{
-			int length = 0;
+			unsigned int length = 0;
 			// On parcourt la liste chainée
 			HASHMAP_DATA* list_ptr = map->table[i];
 			while(list_ptr != NULL)
 			{
-				n++;
+				map->n++;
 				length++;
-				if (length > *max_length) *max_length = length;
+				if (length > map->max_length) map->max_length = length;
 				if (DEBUG_HMAP) printf("[%d]%s:%d ", i, list_ptr->cle, list_ptr->valeur);
 				if(list_ptr->suivant != NULL) list_ptr = list_ptr->suivant;
 				else break;
@@ -118,5 +119,5 @@ void analyseHashMap(HashMap* map, int* max_length, float* remplissage)
 		}
 	}
 	if (DEBUG_HMAP) printf("\n");
-	*remplissage = (float)n / (float)map->size;
+	map->remplissage = (float)map->n / (float)map->size;
 }
