@@ -1,94 +1,113 @@
 #include "Hashmap.h"
-#include "stdafx.h"
+#include <stdio.h>
 
-Donnee* newHashTable(int size)
-{
-	Donnee *table = malloc(sizeof(Donnee)*size);
-	for (int i = 0; i < size; i++)
+HashMap* newHashMap(unsigned int size){
+	HashMap* map = malloc(sizeof(HashMap));
+	HASHMAP_DATA** table = malloc(sizeof(HASHMAP_DATA*)*size);
+	
+	map->size = size;
+	map->table = table;
+
+	for (unsigned int i = 0; i < size; i++)
 	{
-		table[i].cle = NULL;
-		table[i].valeur = NULL;
-		table[i].suivant = NULL;
+		table[i] = NULL;
 	}
-	return table;
+
+	return map;
 }
 
-
-int fonctionDeHashage(char* cle, int m)
+unsigned int fonctionDeHashage(HashMap* hashMap, char* cle)
 {
-
-	int k = 0;
-	int length = strlen(cle);
-	for (int i = 0; i < length; i++)
+	unsigned int k = 0;
+	unsigned int length = strlen(cle);
+	for (unsigned int i = 0; i < length; i++)
 	{
-		k += cle[i];
+		k += cle[i]*(10^i);
 	}
-	return k%m;
+	unsigned int hash = (k % (hashMap->size));
+	//printf("%s : %d : %d\n", cle, k, hash);
+	return hash;
 }
 
-void inserer(Donnee *table, int m, char* cle)
+void HASHMAP_inserer(HashMap *map, char* cle, int valeur)
 {
+	//printHashMap(map);
+	//printf("insert '%s' : ", cle);
+	int hash = fonctionDeHashage(map, cle);
+	
+	HASHMAP_DATA* newData=malloc(sizeof(HASHMAP_DATA));
+	newData->cle = malloc(sizeof(char[16]));
+	strcpy(newData->cle, cle);
+	newData->valeur = valeur;
+	newData->suivant = NULL;
 
-	int hash = fonctionDeHashage(cle, m);
-	Donnee *item=malloc(sizeof(Donnee));
-	item->cle = cle;
-	item->valeur = 1;
-	item->suivant = NULL;
-	if (table[hash].cle == NULL && table[hash].valeur == NULL)
+	// S'il n'y a rien dans la table de hachage
+	// à cet index, on crée une entrée
+	if (map->table[hash] == NULL)
 	{
-		table[hash] = (*item);
+		map->table[hash] = newData;
+		//printf("new entry\n");
+		return;
 	}
-	else
-	{
-		Donnee* trouve = recherche((*item), &table[hash]);
-		if (strcmp(trouve->cle, item->cle) == 0)
-		{
-			trouve->valeur += 1;
-		}
-		else
-		{
-			trouve->suivant = item;
-		}
-		int a = 0;
-	}
-}
 
-Donnee* recherche(Donnee cible, Donnee* noeud)
-{
-	int trouve = 0;
-
+	// On parcourt la liste chainée
+	HASHMAP_DATA* list_ptr = map->table[hash];
 	do
 	{
-		if (strcmp(noeud->cle, cible.cle) == 0);
+		// On vérifie si l'entrée existe déjà
+		if(strcmp(list_ptr->cle, cle) == 0)
 		{
-			return noeud;
+			list_ptr->valeur += valeur;
+			//printf("entry++\n");
+			return;
 		}
-		if (noeud->suivant == NULL)
-		{
-			return noeud;
-		}
-		noeud = noeud->suivant;
-	} while (1);
+		list_ptr = list_ptr->suivant;
+	}
+	while(list_ptr != NULL);
+
+	// On a pas trouvé d'entrée attachée à la clé
+	// On en crée une à la fin de la liste chainée
+	list_ptr->suivant = newData;
+	//printf("new entry chain\n");
 }
 
-Donnee* rechercheCle(char* cle, Donnee* noeud)
+HASHMAP_DATA* HASHMAP_rechercher(HashMap* map, char* cle)
 {
+	printHashMap(map);
+	printf("scan %s\n", cle);
+
+	int hash = fonctionDeHashage(map, cle);
+
+	// On parcourt la liste chainée
+	HASHMAP_DATA* list_ptr = map->table[hash];
 	do
 	{
-		if (strcmp(noeud->cle, cle) == 0);
+		// On vérifie si l'entrée existe
+		if(strcmp(list_ptr->cle, cle) == 0)
 		{
-			return noeud;
+			return list_ptr;
 		}
-		noeud = noeud->suivant;
-	} while (noeud != NULL);
+		list_ptr = list_ptr->suivant;
+	}
+	while(list_ptr != NULL);
 	return NULL;
 }
 
-Donnee* get(Donnee *table, int m, char* cle)
+void printHashMap(HashMap* map)
 {
-	int hash = fonctionDeHashage(cle, m);
-	Donnee* result = rechercheCle(cle, &table[hash]);
-	return result;
-
+	for(unsigned int i = 0; i < map->size; i++)
+	{
+		if(map->table[i] != NULL)
+		{
+			// On parcourt la liste chainée
+			HASHMAP_DATA* list_ptr = map->table[i];
+			do
+			{
+				printf("[%d]%s:%d ", i, list_ptr->cle, list_ptr->valeur);
+				list_ptr = list_ptr->suivant;
+			}
+			while(list_ptr != NULL);
+		}
+	}
+	printf("\n");
 }
-

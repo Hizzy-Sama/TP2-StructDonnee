@@ -7,44 +7,40 @@
 
 #define MAXCHAR 1024
 
-struct donnee {
+typedef struct heap_donnee {
 	char* mot;
 	int compte;
-	struct donnee* suivant;
-};
+	struct heap_donnee* suivant;
+} HEAP_DATA;
 
-typedef struct donnee donnee;
+typedef struct MaxHeap {
+	int size;
+	int count;
+	HEAP_DATA *heap;
+} MaxHeap;
 
-int parent(int pos) {
+int HEAP_parent(int pos) {
 	return (pos - 1) / 2;
 }
 
-int leftChild(int pos) {
+int HEAP_leftChild(int pos) {
 	return 2 * pos + 1;
 }
 
-int rightChild(int pos) {
+int HEAP_rightChild(int pos) {
 	return 2 * pos + 2;
 }
 
-struct MaxHeap {
-	int size;
-	int count;
-	donnee *heap;
-};
-
-typedef struct MaxHeap MaxHeap;
-
-void initialiser(MaxHeap *h, int s) {
+void HEAP_initialiser(MaxHeap *h, int s) {
 	h->count = 0;
 	h->size = s;
-	h->heap = (donnee *)malloc(sizeof(donnee) * s);
+	h->heap = (HEAP_DATA *)malloc(sizeof(HEAP_DATA) * s);
 }
 
-void inserer(MaxHeap *h, donnee v) {
+void HEAP_inserer(MaxHeap *h, HEAP_DATA v) {
 	if (h->count == h->size) {
 		h->size += 1;
-		h->heap = realloc(h->heap, sizeof(donnee) * h->size);
+		h->heap = realloc(h->heap, sizeof(HEAP_DATA) * h->size);
 	}
 
     // une seule position possible : à la fin
@@ -53,32 +49,32 @@ void inserer(MaxHeap *h, donnee v) {
 
     // percolage
 	while (index != 0) {
-		if (h->heap[index].compte > h->heap[parent(index)].compte) {
+		if (h->heap[index].compte > h->heap[HEAP_parent(index)].compte) {
 
             // si le parent a un nombre d'occurence plus faible
             // que la nouvelle donnée, on les échange
-			donnee tmp = h->heap[index];
-			h->heap[index] = h->heap[parent(index)];
-			h->heap[parent(index)] = tmp;
+			HEAP_DATA tmp = h->heap[index];
+			h->heap[index] = h->heap[HEAP_parent(index)];
+			h->heap[HEAP_parent(index)] = tmp;
 
-			index = parent(index);
+			index = HEAP_parent(index);
 		}
 		else break;
 	}
 	h->count++;
 }
 
-void construire(MaxHeap *h, donnee * data, int data_length){
+void HEAP_construire(MaxHeap *h, HEAP_DATA * data, int data_length){
 	h->count = 0;
 	h->size = data_length;
-	h->heap = (donnee *)malloc(sizeof(donnee) * data_length);
+	h->heap = (HEAP_DATA *)malloc(sizeof(HEAP_DATA) * data_length);
     for (int i = 0; i < data_length; i++)
     {
-        inserer(h, data[i]);
+        HEAP_inserer(h, data[i]);
     }
 }
 
-void pop(MaxHeap *h) {
+void HEAP_pop(MaxHeap *h) {
 	if (h->count == 0)
 		return;
 
@@ -92,18 +88,18 @@ void pop(MaxHeap *h) {
 	while (index < h->count) {
 		int max = index;
 
-		if (leftChild(index) < h->count && h->heap[leftChild(index)].compte > h->heap[max].compte)
+		if (HEAP_leftChild(index) < h->count && h->heap[HEAP_leftChild(index)].compte > h->heap[max].compte)
 		{
-			max = leftChild(index);
+			max = HEAP_leftChild(index);
 		}
 
-		if (rightChild(index) < h->count && h->heap[rightChild(index)].compte > h->heap[max].compte)
+		if (HEAP_rightChild(index) < h->count && h->heap[HEAP_rightChild(index)].compte > h->heap[max].compte)
 		{
-			max = rightChild(index);
+			max = HEAP_rightChild(index);
 		}
 
 		if (max != index) {
-			donnee tmp = h->heap[index];
+			HEAP_DATA tmp = h->heap[index];
 			h->heap[index] = h->heap[max];
 			h->heap[max] = tmp;
 			index = max;
@@ -112,7 +108,7 @@ void pop(MaxHeap *h) {
 	}
 }
 
-donnee top(MaxHeap *h) {
+HEAP_DATA HEAP_top(MaxHeap *h) {
 	return h->heap[0];
 }
 
@@ -126,11 +122,11 @@ void printWordOccur(char* word, unsigned int occurence)
 	printf(": %i\n", occurence);
 }
 
-void afficherDonnees(MaxHeap *h) {
+void HEAP_afficherDonnees(MaxHeap *h) {
     int previous_count = h->count;
 	while (h->count != 1)
 	{
-		donnee d = top(h); pop(h);
+		HEAP_DATA d = HEAP_top(h); HEAP_pop(h);
 		printWordOccur(d.mot, d.compte);
 	}
     h->count = previous_count;
@@ -154,20 +150,21 @@ void printInfo(unsigned int taille, double remplissage, unsigned int longueurMax
 int main() {
 	const int heap_size = 100;
 	MaxHeap h;
-    donnee data[100];
+    HEAP_DATA data[100];
 	for (int i = 0; i <= 100; ++i)
 	{
-		donnee d;
+		HEAP_DATA d;
 		d.compte = rand() % 10000;
-		d.mot = "a";
+		d.mot = "mot";
 		data[i] = d;
 	}
-	construire(&h, data, heap_size);
-	afficherDonnees(&h);
+	HEAP_construire(&h, data, heap_size);
+	HEAP_afficherDonnees(&h);
 	return 0;
 }
 */
 
+#define TABLE_SIZE 1024
 int main(int argc, const char* argv[])
 {
 	// INPUT CHECK
@@ -190,6 +187,8 @@ int main(int argc, const char* argv[])
 	char *word;
 	//unsigned int max = 0;
 
+    HashMap* Hmap = newHashMap(TABLE_SIZE);
+
 	// DATA GATHERING -> HASHTABLE
 	while (fgets(str, MAXCHAR, fp) != NULL)
 	{
@@ -201,13 +200,20 @@ int main(int argc, const char* argv[])
 		while (word != NULL)
 		{
 			//if(strlen(word) > max) { max = strlen(word); }
+	        //printHashMap(Hmap);
 
 			//=========================================================/
 			//insérer dans la table de hashage, clé = word, valeur += 1
+            char key[16];
+            strcpy(key, word);
+            HASHMAP_inserer(Hmap, key, 1);
 			//=========================================================/
 
 			printf("'%s'\n", word);
+	        printHashMap(Hmap);
+			printf("\n\n");
 			word = strtok(NULL, delimiters);
+
 		}
 	}
 	//printf("%i", max);
